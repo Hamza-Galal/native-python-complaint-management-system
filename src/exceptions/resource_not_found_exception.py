@@ -1,4 +1,4 @@
-from src.exceptions.application_exception import ApplicationException
+from exceptions.application_exception import ApplicationException
 
 class ResourceNotFoundException(ApplicationException):
     def __init__(self, message = "Resource Not Found."):

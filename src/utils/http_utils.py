@@ -1,9 +1,11 @@
 from urllib.parse import urlparse , parse_qs
-from src.utils.json_utils import JsonUtils
-from src.exceptions.validation_exception import ValidationException
+
+from utils.json_utils import JSONUtils
+from exceptions.validation_exception import ValidationException
 
 
-class HttpUtils:
+class HTTPUtils:
+
     @staticmethod
     def read_request_body(handler):
         content_length = handler.headers.get("Content-Length")
@@ -23,10 +25,10 @@ class HttpUtils:
 
     @staticmethod
     def send_json_response(handler, status_code ,data):
-        json_data = JsonUtils.to_json(data)
+        json_data = JSONUtils.to_json(data)
         response_body = json_data.encode("utf-8")
         handler.send_response(status_code)
-        HttpUtils.set_response_headers(handler)
+        HTTPUtils.set_response_headers(handler)
 
         handler.send_header(
             "Content-Type",
@@ -43,16 +45,25 @@ class HttpUtils:
     @staticmethod
     def  send_empty_response(handler ,status_code):
         handler.send_response(status_code)
-        HttpUtils.set_response_headers(handler)
-        handler.send_header("Content-Length","0")
+        HTTPUtils.set_response_headers(handler)
+        if status_code != 204:
+            handler.send_header("Content-Length","0")
         handler.end_headers()
+
+    @staticmethod
+    def send_error_response(handler,status_code,error_data):
+        HTTPUtils.send_json_response(
+            handler,
+            status_code,
+            error_data
+        )
 
     @staticmethod
     def set_response_headers(handler):
         handler.send_header("Access-Control-Allow-Origin","*")
         handler.send_header(
             "Access-Control-Allow-Methods",
-             "GET , POST , PUT , PATCH , DELETE , OPTIONS"
+             "GET, POST, PUT, PATCH, DELETE, OPTIONS"
              )
         handler.send_header(
             "Access-Control-Allow-Headers",

@@ -1,8 +1,8 @@
 import json
-from src.exceptions.invalid_json_exception import InvalidJsonException
-from src.exceptions.internal_server_exception import InternalServerException
+from exceptions.invalid_json_exception import InvalidJsonException
+from exceptions.internal_server_exception import InternalServerException
 
-class JsonUtils:
+class JSONUtils:
     @staticmethod
     def to_json(data):
         try:
@@ -22,7 +22,7 @@ class JsonUtils:
         try:
             return json.loads(json_data)
 
-        except(json.JSONDecodeError , ValueError) as exception:
+        except json.JSONDecodeError as exception:
             raise InvalidJsonException() from exception
 
     @staticmethod
@@ -34,7 +34,7 @@ class JsonUtils:
             if isinstance(body , bytes):
                 body = body.decode("utf-8")
 
-            return JsonUtils.from_json(body)
+            return JSONUtils.from_json(body)
 
         except UnicodeDecodeError as exception:
             raise InvalidJsonException("Request Body must use UTF-8 encoding.") from exception

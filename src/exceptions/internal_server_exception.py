@@ -1,4 +1,4 @@
-from src.exceptions.application_exception import ApplicationException
+from exceptions.application_exception import ApplicationException
 
 class InternalServerException(ApplicationException):
     def __init__(self, message="Internal Server Error."):

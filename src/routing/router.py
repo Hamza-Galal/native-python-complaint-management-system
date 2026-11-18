@@ -1,6 +1,6 @@
 import re
-from src.exceptions.resource_not_found_exception import ResourceNotFoundException
-from src.exceptions.method_not_allowed_exception import MethodNotAllowedException
+from exceptions.resource_not_found_exception import ResourceNotFoundException
+from exceptions.method_not_allowed_exception import MethodNotAllowedException
 
 class Router:
     def __init__(self):
@@ -15,7 +15,7 @@ class Router:
             if part.startswith("<") and part.endswith(">"):
                 parameter_name = part[1:-1]
                 regex_parts.append(
-                    f"(?P<{parameter_name}>[^/]f)"
+                    f"(?P<{parameter_name}>[^/]+)"
                 )
             else:
                 regex_parts.append(re.escape(part))

@@ -1,4 +1,4 @@
-from src.exceptions.application_exception import ApplicationException
+from exceptions.application_exception import ApplicationException
 
 class MethodNotAllowedException(ApplicationException):
     def __init__(self, message = " Http Method Not Allowed."):
