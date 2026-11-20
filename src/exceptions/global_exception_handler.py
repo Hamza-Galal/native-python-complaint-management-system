@@ -1,24 +1,32 @@
-from datetime import datetime
+
+from datetime import datetime, timezone
+
 from exceptions.application_exception import ApplicationException
 
+
 class GlobalExceptionHandler:
+
     @staticmethod
-    def handle_exception(exception,path):
-        if isinstance(exception,ApplicationException):
-            status = exception.status_code
+    def handle_exception(exception, path):
+
+        if isinstance(exception, ApplicationException):
+            status_code = exception.status_code
             error = exception.error
             message = exception.message
+
         else:
-            status = 500
-            error  = "Internal Server Error"
-            message = "An Unexcpected Error Occured"
+            status_code = 500
+            error = "Internal Server Error"
+            message = "An Unexpected Error Occurred"
 
         error_response = {
-            "timestamp": datetime.now().isoformat(timespec = "seconds"),
-            "status": status,
+            "timestamp": datetime.now(timezone.utc).isoformat(
+                timespec="seconds"
+            ),
+            "status": status_code,
             "error": error,
             "message": message,
             "path": path
         }
 
-        return status , error_response
+        return status_code, error_response
