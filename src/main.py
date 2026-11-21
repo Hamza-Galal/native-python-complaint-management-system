@@ -4,6 +4,7 @@ from servers.http_server_manager import HTTPServerManager
 
 from handlers.health_handler import HealthHandler
 from handlers.auth_handler import AuthHandler
+from handlers.customer_handler import CustomerHandler
 
 from app_container import AppContainer
 
@@ -51,6 +52,25 @@ def main():
         "POST",
         "/api/auth/logout",
         auth_handler.logout
+    )
+
+    # Customer endpoints (all protected)
+    customer_handler = CustomerHandler(
+        app_container.authentication_service,
+        app_container.customer_service
+    )
+
+    router.register("GET", "/api/customers", customer_handler.get_all)
+    router.register(
+        "GET", "/api/customers/<customerId>", customer_handler.get_by_id
+    )
+    router.register(
+        "PUT", "/api/customers/<customerId>", customer_handler.update
+    )
+    router.register(
+        "PATCH",
+        "/api/customers/<customerId>/status",
+        customer_handler.update_status
     )
 
     server_manager = HTTPServerManager(
