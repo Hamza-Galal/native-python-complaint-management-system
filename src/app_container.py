@@ -7,6 +7,8 @@ from repositories.in_memory_token_repository import InMemoryTokenRepository
 
 from services.authentication_service import AuthenticationService
 from services.authorization_service import AuthorizationService
+from services.customer_service import CustomerService
+from repositories.in_memory_customer_repository import InMemoryCustomerRepository
 
 from models.user import User
 from models.user_role import UserRole
@@ -25,7 +27,19 @@ class AppContainer:
         self.token_repository = InMemoryTokenRepository()
         self.audit_event_repository = InMemoryAuditEventRepository()
 
-        self.customer_profile_creator = None
+        self.customer_repository = InMemoryCustomerRepository()
+
+        self.customer_service = CustomerService(
+            self.customer_repository,
+            self.user_repository,
+            self.token_repository,
+            self.audit_event_repository
+        )
+
+        # Registration hook provided by Assignment 3
+        self.customer_profile_creator = (
+            self.customer_service.create_profile_for_user
+        )
 
         self.authentication_service = AuthenticationService(
             self.user_repository,
