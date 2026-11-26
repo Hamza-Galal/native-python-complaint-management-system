@@ -1,10 +1,10 @@
-
 from routing.router import Router
 from servers.http_server_manager import HTTPServerManager
 
 from handlers.health_handler import HealthHandler
 from handlers.auth_handler import AuthHandler
 from handlers.customer_handler import CustomerHandler
+from handlers.category_handler import CategoryHandler
 
 from app_container import AppContainer
 
@@ -71,6 +71,26 @@ def main():
         "PATCH",
         "/api/customers/<customerId>/status",
         customer_handler.update_status
+    )
+
+    # Category endpoints (all protected)
+    category_handler = CategoryHandler(
+        app_container.authentication_service,
+        app_container.category_service
+    )
+
+    router.register("POST", "/api/categories", category_handler.create)
+    router.register("GET", "/api/categories", category_handler.get_all)
+    router.register(
+        "GET", "/api/categories/<categoryId>", category_handler.get_by_id
+    )
+    router.register(
+        "PUT", "/api/categories/<categoryId>", category_handler.update
+    )
+    router.register(
+        "PATCH",
+        "/api/categories/<categoryId>/status",
+        category_handler.update_status
     )
 
     server_manager = HTTPServerManager(

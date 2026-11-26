@@ -1,4 +1,3 @@
-
 import os
 import uuid
 
@@ -8,6 +7,9 @@ from repositories.in_memory_token_repository import InMemoryTokenRepository
 from services.authentication_service import AuthenticationService
 from services.authorization_service import AuthorizationService
 from services.customer_service import CustomerService
+from services.category_service import CategoryService
+from repositories.in_memory_category_repository import InMemoryCategoryRepository
+from models.complaint_category import ComplaintCategory
 from repositories.in_memory_customer_repository import InMemoryCustomerRepository
 
 from models.user import User
@@ -20,6 +22,15 @@ class AppContainer:
     ADMIN_EMAIL = "admin@cms.local"
     ADMIN_NAME = "System Administrator"
     DEFAULT_ADMIN_PASSWORD = "Admin@12345"
+
+    DEFAULT_CATEGORIES = [
+        "Technical Support",
+        "Billing",
+        "Delivery",
+        "Account Issues",
+        "Product Quality",
+        "Other",
+    ]
 
     def __init__(self):
 
@@ -49,7 +60,23 @@ class AppContainer:
         )
         self.authorization_service = AuthorizationService()
 
+        # Category management (Assignment 4)
+        self.category_repository = InMemoryCategoryRepository()
+        self.category_service = CategoryService(
+            self.category_repository,
+            self.audit_event_repository
+        )
+
         self.seed_admin_user()
+        self.seed_categories()
+
+    def seed_categories(self):
+        for name in self.DEFAULT_CATEGORIES:
+            if self.category_repository.find_by_name(name) is None:
+                self.category_repository.save(ComplaintCategory(
+                    id=str(uuid.uuid4()),
+                    name=name
+                ))
 
     def seed_admin_user(self):
 
